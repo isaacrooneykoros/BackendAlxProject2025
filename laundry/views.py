@@ -1,3 +1,54 @@
-from django.shortcuts import render
+from rest_framework import generics, permissions
+from .models import Order, Notification
+from .serializers import (
+    RegisterSerializer,
+    OrderSerializer,
+    NotificationSerializer
+)
 
-# Create your views here.
+
+# Register View
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+# Orders List/Create
+class OrderListCreateView(generics.ListCreateAPIView):
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return Order.objects.all()
+        return Order.objects.filter(customer=user)
+
+    def perform_create(self, serializer):
+        serializer.save(customer=self.request.user)
+
+
+# Order Detail/Update/Delete
+class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+# Notifications List
+class NotificationListView(generics.ListAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user)
+
+
+# Mark Notification as Read
+class NotificationUpdateView(generics.UpdateAPIView):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_update(self, serializer):
+        serializer.save(is_read=True)

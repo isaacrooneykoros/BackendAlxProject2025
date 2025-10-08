@@ -20,13 +20,21 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'laundry'
+    'rest_framework',
+    'laundry',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -39,6 +47,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'AlxProject2025.urls'
+AUTH_USER_MODEL = 'laundry.User'
 
 TEMPLATES = [
     {
