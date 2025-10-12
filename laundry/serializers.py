@@ -48,6 +48,21 @@ class OrderStatusUpdateSerializer(serializers.ModelSerializer):
 
 # Notification serializer
 class NotificationSerializer(serializers.ModelSerializer):
+    # Allow admin to specify which user receives the notification
+    user_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        source='user',
+        write_only=True
+    )
+
+    # Display the username of the recipient in the response
+    username = serializers.CharField(source='user.username', read_only=True)
+
     class Meta:
         model = Notification
-        fields = ['id', 'message', 'is_read', 'timestamp']
+        fields = ['id', 'user_id', 'username', 'message', 'is_read', 'timestamp']
+
+class NotificationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ['user', 'message']  # Admin specifies which user gets the notification

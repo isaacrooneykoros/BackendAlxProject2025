@@ -3,8 +3,10 @@ from .models import Order, Notification
 from .serializers import (
     RegisterSerializer,
     OrderSerializer,
-    NotificationSerializer,OrderStatusUpdateSerializer
+    NotificationSerializer,OrderStatusUpdateSerializer,NotificationCreateSerializer
 )
+from rest_framework.response import Response
+from rest_framework import status
 
 
 # Register View
@@ -58,3 +60,30 @@ class NotificationUpdateView(generics.UpdateAPIView):
 
     def perform_update(self, serializer):
         serializer.save(is_read=True)
+
+class IsAdminOrStaff(permissions.BasePermission):
+    """Allow only admin/staff users to send notifications."""
+    def has_permission(self, request, view):
+        return request.user and request.user.is_staff  # or request.user.is_superuser
+
+
+#Notification Create
+class NotificationCreateView(generics.CreateAPIView):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrStaff]
+
+    def perform_create(self, serializer):
+        serializer.save()  # admin will provide the user field in the request
+
+# 🟩 Admin-only: Send notification to any customer
+class NotificationSendView(generics.CreateAPIView):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationCreateSerializer
+    permission_classes = [permissions.IsAdminUser]  # Restrict to admins only
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"message": "Notification sent successfully!"}, status=status.HTTP_201_CREATED)

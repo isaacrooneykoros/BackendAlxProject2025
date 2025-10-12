@@ -4,10 +4,10 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from .views import (
-    RegisterView,
+    RegisterView,NotificationSendView,
     OrderListCreateView, OrderDetailView,
     NotificationListView, NotificationUpdateView,
-    OrderStatusUpdateView,
+    OrderStatusUpdateView,NotificationCreateView
 )
 
 urlpatterns = [
@@ -25,4 +25,6 @@ urlpatterns = [
     # Notifications
     path('notifications/', NotificationListView.as_view(), name='notifications'),
     path('notifications/<int:pk>/', NotificationUpdateView.as_view(), name='notification-update'),
+    path('create/', NotificationCreateView.as_view(), name='notification-create'),
+    path('notifications/send/', NotificationSendView.as_view(), name='notification-send'),  # 👈 New route
 ]
