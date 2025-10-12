@@ -46,7 +46,8 @@ class NotificationListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Notification.objects.filter(user=self.request.user)
+        # Return only the current user's notifications, newest first
+        return Notification.objects.filter(user=self.request.user).order_by('-timestamp')
 
 
 # Mark Notification as Read

@@ -50,5 +50,4 @@ class OrderStatusUpdateSerializer(serializers.ModelSerializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = '__all__'
-        read_only_fields = ['user', 'timestamp']
+        fields = ['id', 'message', 'is_read', 'timestamp']
