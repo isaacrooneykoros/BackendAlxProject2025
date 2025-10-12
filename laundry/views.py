@@ -3,7 +3,7 @@ from .models import Order, Notification
 from .serializers import (
     RegisterSerializer,
     OrderSerializer,
-    NotificationSerializer
+    NotificationSerializer,OrderStatusUpdateSerializer
 )
 
 
@@ -33,6 +33,11 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class OrderStatusUpdateView(generics.UpdateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderStatusUpdateSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 
 # Notifications List

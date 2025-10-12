@@ -40,6 +40,11 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['customer', 'created_at', 'updated_at']
 
+class OrderStatusUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['status']
+
 
 # Notification serializer
 class NotificationSerializer(serializers.ModelSerializer):

@@ -6,7 +6,8 @@ from rest_framework_simplejwt.views import (
 from .views import (
     RegisterView,
     OrderListCreateView, OrderDetailView,
-    NotificationListView, NotificationUpdateView
+    NotificationListView, NotificationUpdateView,
+    OrderStatusUpdateView,
 )
 
 urlpatterns = [
@@ -18,6 +19,8 @@ urlpatterns = [
     # Orders
     path('orders/', OrderListCreateView.as_view(), name='order-list'),
     path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
+    path('orders/<int:pk>/status/', OrderStatusUpdateView.as_view(), name='order-status-update'),
+
 
     # Notifications
     path('notifications/', NotificationListView.as_view(), name='notifications'),
