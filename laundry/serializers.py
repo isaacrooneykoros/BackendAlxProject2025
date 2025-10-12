@@ -46,7 +46,6 @@ class OrderStatusUpdateSerializer(serializers.ModelSerializer):
         fields = ['status']
 
 
-# Notification serializer
 class NotificationSerializer(serializers.ModelSerializer):
     # Allow admin to specify which user receives the notification
     user_id = serializers.PrimaryKeyRelatedField(
@@ -55,12 +54,19 @@ class NotificationSerializer(serializers.ModelSerializer):
         write_only=True
     )
 
-    # Display the username of the recipient in the response
+    # Display the username of the recipient in responses
     username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
         model = Notification
         fields = ['id', 'user_id', 'username', 'message', 'is_read', 'timestamp']
+        read_only_fields = ['is_read', 'timestamp']
+
+    def validate(self, data):
+        request = self.context.get('request')
+        if request and request.user.role != 'admin':
+            raise serializers.ValidationError("Only admins can send notifications.")
+        return data
 
 class NotificationCreateSerializer(serializers.ModelSerializer):
     class Meta:

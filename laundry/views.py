@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 from .models import Order, Notification
 from .serializers import (
@@ -87,3 +88,37 @@ class NotificationSendView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"message": "Notification sent successfully!"}, status=status.HTTP_201_CREATED)
+
+class AdminSendNotificationView(generics.CreateAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        if request.user.role != 'admin':
+            return Response({"error": "Only admins can send notifications."}, status=403)
+
+        message = request.data.get('message')
+        user_ids = request.data.get('user_ids', None)  # list of IDs or None
+        send_to_all = request.data.get('send_to_all', False)
+
+        if not message:
+            return Response({"error": "Message field is required."}, status=400)
+
+        if send_to_all:
+            customers = User.objects.filter(role='customer')
+        elif user_ids:
+            customers = User.objects.filter(id__in=user_ids, role='customer')
+        else:
+            return Response({
+                "error": "Provide either 'user_ids' (list) or set 'send_to_all' to true."
+            }, status=400)
+
+        notifications = [
+            Notification(user=customer, message=message)
+            for customer in customers
+        ]
+        Notification.objects.bulk_create(notifications)
+
+        return Response({
+            "message": f"Notifications sent to {customers.count()} customer(s)."
+        }, status=status.HTTP_201_CREATED)

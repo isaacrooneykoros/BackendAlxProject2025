@@ -7,7 +7,8 @@ from .views import (
     RegisterView,NotificationSendView,
     OrderListCreateView, OrderDetailView,
     NotificationListView, NotificationUpdateView,
-    OrderStatusUpdateView,NotificationCreateView
+    OrderStatusUpdateView,NotificationCreateView,
+    AdminSendNotificationView
 )
 
 urlpatterns = [
@@ -25,6 +26,7 @@ urlpatterns = [
     # Notifications
     path('notifications/', NotificationListView.as_view(), name='notifications'),
     path('notifications/<int:pk>/', NotificationUpdateView.as_view(), name='notification-update'),
-    path('create/', NotificationCreateView.as_view(), name='notification-create'),
-    path('notifications/send/', NotificationSendView.as_view(), name='notification-send'),  # 👈 New route
+    path('notifications/create/', NotificationCreateView.as_view(), name='notification-create'),
+    path('notifications/send/', NotificationSendView.as_view(), name='notification-send'),
+    path('notifications/admin/send/', AdminSendNotificationView.as_view(), name='send-notification'),
 ]
