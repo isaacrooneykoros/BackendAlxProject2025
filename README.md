@@ -45,24 +45,6 @@ templates/
 
 ---
 
-## 🔐 Authentication Flow  
-
-Implemented using **JWT (JSON Web Tokens)**  
-
-| Endpoint | Purpose |
-|-----------|----------|
-| `POST /api/auth/register/` | Register a new user |
-| `POST /api/auth/token/` | Login (returns access + refresh tokens) |
-| `POST /api/auth/token/refresh/` | Refresh access token |
-
-**Frontend Flow**
-- Tokens stored securely in `localStorage`
-- Redirects logged-in users directly to `/orders/`
-- Blocks guests from accessing the dashboard
-- Logout clears all tokens and session data
-
----
-
 ## ✨ Features Implemented  
 
 ### 🧱 Backend (API)
