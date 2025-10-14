@@ -30,11 +30,12 @@ Admins can update orders, send notifications, and manage users easily.
 ## 🏗️ Project Structure  
 
 laundry/
-├── api_urls.py # API endpoints (register, login, orders, notifications)
-├── frontend_urls.py # Frontend routes (login, register, orders, home)
-├── models.py # User, Order, Notification models
-├── serializers.py # API data serializers
-├── views.py # API views logic (CRUD operations)
+├── api_urls.py  # API endpoints (register, login, orders, notifications)
+├── frontend_urls.py  # Frontend routes (login, register, orders, home)
+├── models.py  # User, Order, Notification models
+├── serializers.py  # API data serializers
+├── views.py  # API views logic (CRUD operations)
+
 templates/
 ├── base.html # Shared base layout
 ├── index.html # Landing page
