@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Register | Urban Laundromat{% endblock %}
+
+{% block extra_head %}
+<style>
+  body {
+    background: url("{% static 'assets/img/hero/registerbg.jpg' %}") center/cover fixed no-repeat;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .register-section {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+    animation: fadeIn 1.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .register-card {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+    padding: 40px 35px;
+    width: 420px;
+    color: #000000;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  }
+
+  .register-card h3 {
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: #000000;
+  }
+
+  label {
+    font-weight: 500;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.25);
+    color: #000000;
+  }
+
+  .form-control::placeholder {
+    color: #000000;
+  }
+
+  .btn-primary {
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px;
+    background: #004aad;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn-primary:hover {
+    background: #003580;
+    transform: translateY(-2px);
+  }
+
+  .text-link a {
+    color: #bcd4ff;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .text-link a:hover {
+    color: #000000;
+  }
+
+  .alert-msg {
+    display: none;
+    margin-top: 10px;
+  }
+
+  .alert-msg.show {
+    display: block;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="register-section">
+  <div class="register-card">
+    <h3 class="text-center">Create an Account 🧺</h3>
+    <form id="registerForm">
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+      </div>
+      <div class="mb-3">
+        <label for="phone_number" class="form-label">Phone Number</label>
+        <input type="text" class="form-control" id="phone_number" placeholder="Enter phone number">
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="Create a password" required>
+      </div>
+      <button type="submit" class="btn btn-primary mt-2">Register</button>
+      <div id="alertMsg" class="alert-msg text-center mt-3 text-danger fw-semibold"></div>
+    </form>
+
+    <p class="text-center text-link mt-3">
+      Already have an account?
+      <a href="/login/">Login</a>
+    </p>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const data = {
+    username: document.getElementById("username").value,
+    email: document.getElementById("email").value,
+    password: document.getElementById("password").value,
+    phone_number: document.getElementById("phone_number").value
+  };
+
+  const alertMsg = document.getElementById("alertMsg");
+
+  try {
+    await axios.post("http://127.0.0.1:8100/api/auth/register/", data);
+    alertMsg.classList.remove("show");
+    alert("✅ Registration successful! Redirecting to login...");
+    window.location.href = "/login/";
+  } catch (error) {
+    console.error(error.response?.data || error);
+    alertMsg.textContent = "❌ Registration failed. Check your details.";
+    alertMsg.classList.add("show");
+  }
+});
+</script>
+{% endblock %}

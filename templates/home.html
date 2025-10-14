@@ -1,14 +1,184 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Welcome to Urban Laundromat</h1>
-    <p>Project starter page.</p>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Urban Laundromat | Clean Made Easy{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Hero Section */
+  .hero {
+    position: relative;
+    background: url("{% static 'assets/img/hero/h1_hero.png' %}") center/cover no-repeat;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    animation: fadeInUp 1.2s ease-in-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+    margin-top: 15px;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    margin-top: 25px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+
+  /* Smooth Scroll & Animation */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  [data-animate] {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease-out;
+  }
+
+  [data-animate].visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  section {
+    padding: 80px 0;
+  }
+
+  .service-card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    padding: 30px;
+    transition: transform 0.3s;
+  }
+
+  .service-card:hover {
+    transform: translateY(-10px);
+  }
+
+  footer {
+    margin-top: 50px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="hero-content">
+    <h1>Laundry Pickup & Delivery Simplified</h1>
+    <p>Book your laundry service anytime, anywhere — we’ll handle the rest!</p>
+    <a href="#services" class="btn btn-primary">Request Pickup</a>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="text-center" data-animate>
+  <div class="container">
+    <h2 class="fw-bold mb-5">Our Laundry Services</h2>
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="service-card">
+          <h5>Washing</h5>
+          <p>Clean, fresh clothes handled with care.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="service-card">
+          <h5>Ironing</h5>
+          <p>Professional pressing for a crisp finish.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="service-card">
+          <h5>Dry Cleaning</h5>
+          <p>Gentle cleaning for delicate garments.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="service-card">
+          <h5>Folding</h5>
+          <p>Neatly folded and ready to store or wear.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" data-animate>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h2>About Urban Laundromat</h2>
+        <p>We make laundry hassle-free with quick pickup, expert cleaning, and on-time delivery.</p>
+      </div>
+      <div class="col-md-6">
+        <img src="{% static 'assets/img/gallery/18067.jpg' %}" class="img-fluid rounded" alt="About Laundry">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" data-animate style="background-color:#004aad; color:white;">
+  <div class="container text-center">
+    <h2>Contact Us</h2>
+    <p>Need help? We’re just a message away!</p>
+    <a href="mailto:support@urbanlaundromat.com" class="btn btn-light mt-3">Email Support</a>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+</script>
+{% endblock %}

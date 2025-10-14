@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login | Urban Laundromat{% endblock %}
+
+{% block extra_head %}
+<style>
+  body {
+    background: url("{% static 'assets/img/hero/login_bg.jpg' %}") center/cover fixed no-repeat;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .login-section {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+    animation: fadeIn 1.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .login-card {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+    padding: 40px 35px;
+    width: 380px;
+    color: #fff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  }
+
+  .login-card h3 {
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: #fff;
+  }
+
+  label {
+    font-weight: 500;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+  }
+
+  .form-control::placeholder {
+    color: #eee;
+  }
+
+  .btn-primary {
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px;
+    background: #004aad;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn-primary:hover {
+    background: #003580;
+    transform: translateY(-2px);
+  }
+
+  .text-link a {
+    color: #bcd4ff;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .text-link a:hover {
+    color: #fff;
+  }
+
+  .alert-msg {
+    display: none;
+    margin-top: 10px;
+  }
+
+  .alert-msg.show {
+    display: block;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="login-section">
+  <div class="login-card">
+    <h3 class="text-center">Welcome Back 👋</h3>
+    <form id="loginForm">
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" class="btn btn-primary mt-2">Login</button>
+      <div id="alertMsg" class="alert-msg text-center mt-3 text-danger fw-semibold"></div>
+    </form>
+
+    <p class="text-center text-link mt-3">
+      Don’t have an account?
+      <a href="/register/">Register here</a>
+    </p>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("✅ Login page loaded");
+
+  const token = localStorage.getItem("access");
+  if (token) {
+    console.log("✅ Token found, redirecting...");
+    window.location.href = "/orders/";
+    return;
+  }
+
+  const loginForm = document.getElementById("loginForm");
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    console.log("🟡 Login form submitted");
+
+    const data = {
+      username: document.getElementById("username").value.trim(),
+      password: document.getElementById("password").value.trim(),
+    };
+    console.log("🟡 Sending login request:", data);
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/auth/token/", data);
+      console.log("✅ Login success:", response.data);
+
+      localStorage.setItem("access", response.data.access);
+      localStorage.setItem("refresh", response.data.refresh);
+
+      console.log("✅ Tokens saved, redirecting...");
+      window.location.href = "/orders/";
+    } catch (error) {
+      console.error("❌ Login failed:", error.response?.data || error);
+      alert("Login failed. Please check your credentials.");
+    }
+  });
+});
+</script>
+{% endblock %}
+
+
