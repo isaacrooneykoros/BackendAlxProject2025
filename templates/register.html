@@ -15,7 +15,7 @@
     justify-content: center;
     align-items: center;
     padding: 50px 20px;
-    animation: fadeIn 1.2s ease-in-out;
+    animation: fadeIn 1s ease-in-out;
   }
 
   @keyframes fadeIn {
@@ -52,7 +52,7 @@
   }
 
   .form-control::placeholder {
-    color: #000000;
+    color: #333;
   }
 
   .btn-primary {
@@ -70,13 +70,14 @@
   }
 
   .text-link a {
-    color: #bcd4ff;
+    color: #004aad;
+    font-weight: 600;
     text-decoration: none;
     transition: color 0.3s;
   }
 
   .text-link a:hover {
-    color: #000000;
+    color: #001f5c;
   }
 
   .alert-msg {
@@ -86,6 +87,11 @@
 
   .alert-msg.show {
     display: block;
+  }
+
+  .spinner-border {
+    display: none;
+    margin-left: 10px;
   }
 </style>
 {% endblock %}
@@ -111,8 +117,12 @@
         <label for="password" class="form-label">Password</label>
         <input type="password" class="form-control" id="password" placeholder="Create a password" required>
       </div>
-      <button type="submit" class="btn btn-primary mt-2">Register</button>
-      <div id="alertMsg" class="alert-msg text-center mt-3 text-danger fw-semibold"></div>
+
+      <button type="submit" class="btn btn-primary mt-2" id="registerBtn">
+        Register
+        <span class="spinner-border spinner-border-sm text-light" id="loadingSpinner" role="status"></span>
+      </button>
+      <div id="alertMsg" class="alert-msg text-center mt-3 fw-semibold"></div>
     </form>
 
     <p class="text-center text-link mt-3">
@@ -128,23 +138,47 @@
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const data = {
-    username: document.getElementById("username").value,
-    email: document.getElementById("email").value,
-    password: document.getElementById("password").value,
-    phone_number: document.getElementById("phone_number").value
-  };
-
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const phone_number = document.getElementById("phone_number").value.trim();
   const alertMsg = document.getElementById("alertMsg");
+  const spinner = document.getElementById("loadingSpinner");
+
+  spinner.style.display = "inline-block";
+  alertMsg.classList.remove("show");
 
   try {
-    await axios.post("http://127.0.0.1:8100/api/auth/register/", data);
-    alertMsg.classList.remove("show");
-    alert("✅ Registration successful! Redirecting to login...");
-    window.location.href = "/login/";
+    const response = await axios.post("http://127.0.0.1:8100/api/auth/register/", {
+      username,
+      email,
+      password,
+      phone_number,
+      role: "customer"
+    });
+
+    spinner.style.display = "none";
+    alertMsg.textContent = "✅ Registration successful! Redirecting to login...";
+    alertMsg.classList.add("show");
+    alertMsg.style.color = "green";
+
+    // redirect to login after 2 seconds
+    setTimeout(() => {
+      window.location.href = "/login/";
+    }, 2000);
+
   } catch (error) {
+    spinner.style.display = "none";
     console.error(error.response?.data || error);
-    alertMsg.textContent = "❌ Registration failed. Check your details.";
+
+    if (error.response?.status === 400) {
+      const data = error.response.data;
+      const firstError = Object.values(data)[0];
+      alertMsg.textContent = "❌ " + firstError;
+    } else {
+      alertMsg.textContent = "❌ Registration failed. Please check your details.";
+    }
+    alertMsg.style.color = "red";
     alertMsg.classList.add("show");
   }
 });

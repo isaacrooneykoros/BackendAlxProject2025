@@ -4,29 +4,38 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from .views import (
-    RegisterView,NotificationSendView,
-    OrderListCreateView, OrderDetailView,
-    NotificationListView, NotificationUpdateView,
-    OrderStatusUpdateView,NotificationCreateView,
-    AdminSendNotificationView
+    RegisterView,
+    OrderListCreateView,
+    OrderDetailView,
+    OrderStatusUpdateView,
+    NotificationListView,
+    NotificationUpdateView,
+    NotificationCreateView,
+    NotificationSendView,
+    AdminSendNotificationView,
 )
 
 urlpatterns = [
-    # Auth
+    # ------------------------------
+    # Authentication
+    # ------------------------------
     path('auth/register/', RegisterView.as_view(), name='register'),
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # Orders
+    # ------------------------------
+    # Orders Management
+    # ------------------------------
     path('orders/', OrderListCreateView.as_view(), name='order-list'),
     path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
     path('orders/<int:pk>/status/', OrderStatusUpdateView.as_view(), name='order-status-update'),
 
-
-    # Notifications
-    path('notifications/', NotificationListView.as_view(), name='notifications'),
+    # ------------------------------
+    # Notifications Management
+    # ------------------------------
+    path('notifications/', NotificationListView.as_view(), name='notification-list'),
     path('notifications/<int:pk>/', NotificationUpdateView.as_view(), name='notification-update'),
     path('notifications/create/', NotificationCreateView.as_view(), name='notification-create'),
     path('notifications/send/', NotificationSendView.as_view(), name='notification-send'),
-    path('notifications/admin/send/', AdminSendNotificationView.as_view(), name='send-notification'),
+    path('notifications/admin/send/', AdminSendNotificationView.as_view(), name='admin-notification-send'),
 ]
